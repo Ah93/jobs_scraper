@@ -1,0 +1,490 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Job Scraper Pro</title>
+<style>
+/* Modern CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-weight: 600;
+  color: #555;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+input, select {
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+h2 {
+  color: white;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+table {
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border-collapse: collapse;
+}
+
+thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+th, td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+th {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+}
+
+tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.tag {
+  display: inline-block;
+  background: #667eea;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-right: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #764ba2;
+}
+
+/* Loader Styles */
+.loader {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader-content {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loader-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.loader-subtext {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Status Messages */
+.status-message {
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.status-success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.status-info {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+/* Job Count Badge */
+.job-count {
+  background: #28a745;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .card {
+    padding: 20px;
+  }
+  
+  table {
+    font-size: 0.9rem;
+  }
+  
+  th, td {
+    padding: 12px 8px;
+  }
+  
+  .loader-content {
+    padding: 20px;
+    margin: 20px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Job Scraper Pro <span class="job-count">{% if jobs %}{{ jobs|length }} jobs{% else %}0 jobs{% endif %}</span></h1>
+
+<!-- Status Messages -->
+{% if messages %}
+  {% for message in messages %}
+    <div class="status-message status-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+<form action="{% url 'jobs:scrape' %}" method="post" class="card" id="scrapeForm">
+{% csrf_token %}
+<div class="form-group">
+    <label for="{{ form.platform.id_for_label }}">Platform:</label>
+    {{ form.platform }}
+</div>
+<div class="form-group">
+    <label for="{{ form.role_name.id_for_label }}">Role Name:</label>
+    {{ form.role_name }}
+    <small style="color: #666; font-size: 0.8rem;">{{ form.role_name.help_text }}</small>
+</div>
+<div class="form-group">
+    <label for="{{ form.location.id_for_label }}">Location:</label>
+    {{ form.location }}
+    <small style="color: #666; font-size: 0.8rem;">{{ form.location.help_text }}</small>
+</div>
+<div class="form-group">
+    <label for="{{ form.limit.id_for_label }}">Number of Jobs:</label>
+    {{ form.limit }}
+    <small style="color: #666; font-size: 0.8rem;">{{ form.limit.help_text }}</small>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+<button type="submit" id="scrapeButton">🚀 Run Scraper</button>
+<a href="{% url 'jobs:download_csv' %}?platform=all" style="background: #28a745; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease;">📥 Download CSV</a>
+<a href="{% url 'jobs:clear' %}" onclick="return confirm('Are you sure you want to clear all jobs?')" style="background: #dc3545; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease;">🗑️ Clear All Jobs</a>
+</div>
+</form>
+
+{% if search_role %}
+<h2>Search Results for "{{ search_role }}" in "{{ search_location }}" ({{ search_platform|title }})</h2>
+{% else %}
+<h2>Job Search Results</h2>
+{% endif %}
+<table>
+<thead>
+<tr>
+<th>Job Title</th>
+<th>Company Name</th>
+<th>Job Location</th>
+<th>Job Description</th>
+<th>Source URL</th>
+<th>Sources</th>
+</tr>
+</thead>
+<tbody>
+{% for j in jobs %}
+<tr>
+<td>{{ j.title }}</td>
+<td>{{ j.company.name }}</td>
+<td>{{ j.location }}</td>
+<td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ j.description }}">{{ j.description|truncatechars:100 }}</td>
+<td><a href="{{ j.source_url }}" target="_blank">🔗 open</a></td>
+<td>{% for s in j.sources %}<span class="tag">{{ s }}</span>{% endfor %}</td>
+</tr>
+{% empty %}
+<tr><td colspan="6" style="text-align: center; padding: 40px; color: #666;">
+  <div style="font-size: 1.2rem; margin-bottom: 10px;">🔍 Ready to Search Jobs</div>
+  <div>Enter a role name above and click "Run Scraper" to find jobs!</div>
+</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<!-- Loader -->
+<div class="loader" id="loader">
+  <div class="loader-content">
+    <div class="spinner"></div>
+    <div class="loader-text">Scraping Jobs...</div>
+    <div class="loader-subtext">This may take a few moments. Please wait.</div>
+  </div>
+</div>
+
+<script>
+let updateInterval;
+
+document.getElementById('scrapeForm').addEventListener('submit', function() {
+  // Show loader
+  document.getElementById('loader').style.display = 'flex';
+  
+  // Disable button
+  document.getElementById('scrapeButton').disabled = true;
+  document.getElementById('scrapeButton').textContent = '⏳ Scraping...';
+  
+  // Clear the table immediately
+  clearJobTable();
+  
+  // Start real-time updates
+  startRealTimeUpdates();
+  
+  // Hide loader after 60 seconds (fallback)
+  setTimeout(function() {
+    document.getElementById('loader').style.display = 'none';
+    document.getElementById('scrapeButton').disabled = false;
+    document.getElementById('scrapeButton').textContent = '🚀 Run Scraper';
+    stopRealTimeUpdates();
+  }, 60000);
+});
+
+function startRealTimeUpdates() {
+  updateInterval = setInterval(updateJobTable, 2000); // Update every 2 seconds
+}
+
+function stopRealTimeUpdates() {
+  if (updateInterval) {
+    clearInterval(updateInterval);
+    updateInterval = null;
+  }
+}
+
+function clearJobTable() {
+  const tbody = document.querySelector('tbody');
+  if (tbody) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #666;"><div style="font-size: 1.2rem; margin-bottom: 10px;">🔍 Searching for jobs...</div><div>Please wait while we find the latest opportunities!</div></td></tr>';
+  }
+  updateJobCount(0);
+}
+
+function updateJobTable() {
+  // Get the current platform from the form
+  const platformSelect = document.querySelector('select[name="platform"]');
+  const currentPlatform = platformSelect ? platformSelect.value : 'indeed';
+  
+  fetch(`{% url "jobs:latest_jobs" %}?platform=${currentPlatform}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        updateJobCount(data.count);
+        updateJobRows(data.jobs);
+      }
+    })
+    .catch(error => {
+      console.log('Error updating jobs:', error);
+    });
+}
+
+function updateJobCount(count) {
+  const countElement = document.querySelector('.job-count');
+  if (countElement) {
+    countElement.textContent = count + ' jobs';
+  }
+}
+
+function updateJobRows(jobs) {
+  const tbody = document.querySelector('tbody');
+  if (!tbody) return;
+  
+  if (jobs.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #666;"><div style="font-size: 1.2rem; margin-bottom: 10px;">🔍 Ready to Search Jobs</div><div>Enter a role name above and click "Run Scraper" to find jobs!</div></td></tr>';
+    return;
+  }
+  
+  let html = '';
+  jobs.forEach(job => {
+    const sources = job.sources.map(source => `<span class="tag">${source}</span>`).join('');
+    const description = job.description ? (job.description.length > 100 ? job.description.substring(0, 100) + '...' : job.description) : 'N/A';
+    html += `
+      <tr>
+        <td>${job.title}</td>
+        <td>${job.company}</td>
+        <td>${job.location}</td>
+        <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${job.description || ''}">${description}</td>
+        <td><a href="${job.source_url}" target="_blank">🔗 open</a></td>
+        <td>${sources}</td>
+      </tr>
+    `;
+  });
+  
+  tbody.innerHTML = html;
+}
+
+// Hide loader when page loads (in case of redirect)
+window.addEventListener('load', function() {
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('scrapeButton').disabled = false;
+  document.getElementById('scrapeButton').textContent = '🚀 Run Scraper';
+  
+  // Start real-time updates for existing jobs
+  updateJobTable();
+});
+
+// Clean up on page unload
+window.addEventListener('beforeunload', function() {
+  stopRealTimeUpdates();
+});
+</script>
+</body>
+</html>
