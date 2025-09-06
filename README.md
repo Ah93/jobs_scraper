@@ -1,3 +1,7 @@
+<img width="1251" height="554" alt="img1" src="https://github.com/user-attachments/assets/fcf70b1c-98ac-4260-b12b-080edd201cf4" />
+
+<img width="1187" height="540" alt="img2" src="https://github.com/user-attachments/assets/1f8b39e5-d181-4733-85ab-f3639e281cc3" />
+
 # 🚀 Job Scraper Pro
 
 A powerful Django-based web application for scraping job listings from multiple platforms including Indeed and Glassdoor. Built with modern web technologies and featuring a beautiful, responsive UI.
